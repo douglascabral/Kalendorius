@@ -16,7 +16,7 @@
 *
 * @since 24/03/2015
 *
-* @version 1.0
+* @version 1.1
 */
 class Kalendorius {
 	
@@ -36,8 +36,11 @@ class Kalendorius {
 	
 	protected $format_day = '%{DAY}%';
 	
-	protected $format_month = '%{MONTH_NAME}%';
+	protected $format_month = '%{MONTH}%';
 	
+	protected $format_month_name = '%{MONTH_NAME}%';
+	
+	protected $format_year = '%{YEAR}%';
 	
 	
 	//
@@ -133,6 +136,25 @@ class Kalendorius {
 	}
 	
 	
+	public function get_format_month_name() {
+		return $this->format_month_name;	
+	}
+	
+	
+	public function set_format_month_name( $string ) {
+		$this->format_month_name = $string;
+	}
+	
+	
+	public function get_format_year() {
+		return $this->format_year;	
+	}
+	
+	
+	public function set_format_year( $string ) {
+		$this->format_year = $string;
+	}
+	
 	
 	/**
 	 * Generate calendar for a month 
@@ -183,7 +205,7 @@ class Kalendorius {
 		}
 
 		
-		$name_month = $this->_format( $this->format_month, $time_first_day );
+		$name_month = $this->_format( $this->format_month_name, $time_first_day );
 		
 		$table = <<<HTML
 		<table class="{$this->class_table}">
@@ -267,15 +289,20 @@ HTML;
 	 */
 	protected function _format( $string, $timestamp = 0 ) {
 		
+		if ( $timestamp === 0 ) {
+			$timestamp = time();	
+		}
+		
 		$day = date('j', $timestamp);
 		$month = date('n', $timestamp);
 		$year = date('Y', $timestamp);
 		
-		$search = array('%{DAY}%', '%{MONTH}%', '%{YEAR}%', '%{MONTH_NAME}%');
+		$search = array($this->format_day, $this->format_month, $this->format_year, $this->format_month_name);
 		$replace = array($day, $month, $year, $this->_get_name_of_month( $timestamp ));
 		
 		return str_replace($search, $replace, $string);
 	}
+	
 	
 	
 	/**
