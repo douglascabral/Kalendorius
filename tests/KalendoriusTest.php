@@ -5,6 +5,13 @@ include '../Kalendorius.php';
 class KalendoriusTest extends PHPUnit_Framework_TestCase {
 	
 	
+	public function testConstants() {
+		$this->assertEquals('%{DAY}%', Kalendorius::DAY);
+		$this->assertEquals('%{MONTH}%', Kalendorius::MONTH);
+		$this->assertEquals('%{MONTH_NAME}%', Kalendorius::MONTH_NAME);
+		$this->assertEquals('%{YEAR}%', Kalendorius::YEAR);
+	}
+	
 	
 	public function testGettersAndSetters() {
 
@@ -83,31 +90,24 @@ class KalendoriusTest extends PHPUnit_Framework_TestCase {
 		$objcalendar = null;
 		$methodformat = null;
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}%', time()), $objcalendar, $methodformat);
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}%', time()));
 		$this->assertEquals( date('j'), $result );
 		
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}%/%{MONTH}%', time()), $objcalendar, $methodformat);
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}%/%{MONTH}%', time()));
 		$this->assertEquals( date('j') . '/' . date('n'), $result );
 		
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}% / %{MONTH}%', time()), $objcalendar, $methodformat);
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}% / %{MONTH}%', time()));
 		$this->assertEquals( date('j') . ' / ' . date('n'), $result );
 		
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('testOk', time()), $objcalendar, $methodformat);
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('testOk', time()));
 		$this->assertEquals( 'testOk', $result );
 		
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('', time()), $objcalendar, $methodformat);
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('', time()));
 		$this->assertEmpty( $result );
-		
-		
-		//
-		// Change defaults formats
-		//
-		$objcalendar->set_format_day('--day--');
-		$this->assertEquals('The day is ' . date('j'), $methodformat->invokeArgs($objcalendar, array('The day is --day--', time()) ));
 	}
 	
 	

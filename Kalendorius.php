@@ -16,9 +16,14 @@
 *
 * @since 24/03/2015
 *
-* @version 1.1
+* @version 1.2
 */
 class Kalendorius {
+	
+	const DAY = '%{DAY}%';
+	const MONTH = '%{MONTH}%';
+	const MONTH_NAME = '%{MONTH_NAME}%';
+	const YEAR = '%{YEAR}%';
 	
 	protected $class_table = 'kalendorius';
 	
@@ -34,13 +39,24 @@ class Kalendorius {
 	
 	protected $class_fill = 'extra';
 	
-	protected $format_day = '%{DAY}%';
+	protected $format_day;
 	
-	protected $format_month = '%{MONTH}%';
+	protected $format_month;
 	
-	protected $format_month_name = '%{MONTH_NAME}%';
+	protected $format_month_name;
 	
-	protected $format_year = '%{YEAR}%';
+	protected $format_year;
+	
+	
+	//
+	// Constructor
+	//
+	public function __construct() {
+		$this->format_day = self::DAY;
+		$this->format_month = self::MONTH;
+		$this->format_month_name = self::MONTH_NAME;
+		$this->format_year = self::YEAR;
+	}
 	
 	
 	//
@@ -297,8 +313,8 @@ HTML;
 		$month = date('n', $timestamp);
 		$year = date('Y', $timestamp);
 		
-		$search = array($this->format_day, $this->format_month, $this->format_year, $this->format_month_name);
-		$replace = array($day, $month, $year, $this->_get_name_of_month( $timestamp ));
+		$search = array(self::DAY, self::MONTH, self::MONTH_NAME, self::YEAR);
+		$replace = array($day, $month, $this->_get_name_of_month( $timestamp ), $year);
 		
 		return str_replace($search, $replace, $string);
 	}
