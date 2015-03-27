@@ -17,6 +17,12 @@ class KalendoriusTest extends PHPUnit_Framework_TestCase {
 
 		$calendar = new Kalendorius;
 		
+		// events
+		$this->assertEmpty($calendar->get_events());
+		$calendar->add_event(time());
+		$this->assertEquals(1, count($calendar->get_events()));
+		
+		
 		// class_table
 		$this->assertEquals('kalendorius', $calendar->get_class_table());
 		$calendar->set_class_table('table-calendar');
@@ -33,6 +39,12 @@ class KalendoriusTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('day', $calendar->get_class_day());
 		$calendar->set_class_day('day-of-month');
 		$this->assertEquals('day-of-month', $calendar->get_class_day());
+		
+		
+		// class_day_with_event
+		$this->assertEquals('day-event', $calendar->get_class_day_with_event());
+		$calendar->set_class_day_with_event('event');
+		$this->assertEquals('event', $calendar->get_class_day_with_event());
 		
 		
 		// class_days_of_week
@@ -63,6 +75,12 @@ class KalendoriusTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('%{DAY}%', $calendar->get_format_day());
 		$calendar->set_format_day('%%%');
 		$this->assertEquals('%%%', $calendar->get_format_day());
+		
+		
+		// format_day_with_event
+		$this->assertEquals('<a href="#%{MONTH}%-%{DAY}%">%{DAY}%</a>', $calendar->get_format_day_with_event());
+		$calendar->set_format_day_with_event('%{DAY}%');
+		$this->assertEquals('%{DAY}%', $calendar->get_format_day_with_event());
 		
 		
 		// format_month
@@ -121,6 +139,22 @@ class KalendoriusTest extends PHPUnit_Framework_TestCase {
 	}
 
 
+	
+	public function testSearchEvents() {
+		$class = new ReflectionClass('Kalendorius');	
+  		$method = $class->getMethod('_search_events');
+		$method->setAccessible(true);
+  		$calendar = new Kalendorius;
+  		$start = mktime(0, 0, 0);
+		$end = mktime(23, 59, 59);
+		$now = time();
+		$calendar->add_event( $now );
+		$result = $method->invokeArgs($calendar, array($start, $end));
+		
+		$this->assertContains($now, $result);
+	}
+	
+	
 	
 	private function getProtectedAndPrivateMethod($name, $classname, $params = null, &$objout = null, &$methodout = null) {
   		$class = new ReflectionClass($classname);	

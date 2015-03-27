@@ -16,7 +16,7 @@
 *
 * @since 24/03/2015
 *
-* @version 1.2
+* @version 1.3
 */
 class Kalendorius {
 	
@@ -25,11 +25,15 @@ class Kalendorius {
 	const MONTH_NAME = '%{MONTH_NAME}%';
 	const YEAR = '%{YEAR}%';
 	
+	protected $events = array();
+	
 	protected $class_table = 'kalendorius';
 	
 	protected $class_name_month = 'name-month';
 	
 	protected $class_day = 'day';
+	
+	protected $class_day_with_event = 'day-event';
 	
 	protected $class_days_of_week = 'days-of-week';
 	
@@ -40,6 +44,8 @@ class Kalendorius {
 	protected $class_fill = 'extra';
 	
 	protected $format_day;
+	
+	protected $format_day_with_event;
 	
 	protected $format_month;
 	
@@ -53,6 +59,7 @@ class Kalendorius {
 	//
 	public function __construct() {
 		$this->format_day = self::DAY;
+		$this->format_day_with_event = '<a href="#'. self::MONTH .'-'. self::DAY .'">' . self::DAY . '</a>';
 		$this->format_month = self::MONTH;
 		$this->format_month_name = self::MONTH_NAME;
 		$this->format_year = self::YEAR;
@@ -62,6 +69,16 @@ class Kalendorius {
 	//
 	// Getters and Setters
 	//
+	public function get_events() {
+		return $this->events;	
+	}
+	
+	
+	public function add_event( $timestamp ) {
+		$this->events[] = $timestamp;	
+	}
+	
+	
 	public function get_class_table() {
 		return $this->class_table;	
 	}
@@ -89,6 +106,16 @@ class Kalendorius {
 	
 	public function set_class_day( $class ) {
 		$this->class_day = $class;	
+	}
+	
+	
+	public function get_class_day_with_event() {
+		return $this->class_day_with_event;
+	}
+	
+	
+	public function set_class_day_with_event( $class ) {
+		$this->class_day_with_event = $class;	
 	}
 	
 	
@@ -139,6 +166,16 @@ class Kalendorius {
 	
 	public function set_format_day( $string ) {
 		$this->format_day = $string;	
+	}
+	
+	
+	public function get_format_day_with_event() {
+		return $this->format_day_with_event;	
+	}
+	
+	
+	public function set_format_day_with_event( $string ) {
+		$this->format_day_with_event = $string;	
 	}
 	
 	  
@@ -252,14 +289,27 @@ HTML;
 			
 			$timestamp_day = null;
 			$is_today = '';
+			$have_events = false;
 			
 			if ((int)$day != 0) {
 				$timestamp_day = mktime(0, 0, 0, $month, (int)$day, $year);
+				$timestamp_day_end = mktime(23, 59, 59, $month, (int)$day, $year);
 				$is_today = (mktime(0, 0, 0) == $timestamp_day) ? $this->class_today : '';
+				$have_events = $this->_search_events( $timestamp_day, $timestamp_day_end );
+				
+				if ( $have_events ) {
+					$class .= ' ' . $this->class_day_with_event;
+				}
 			}
 			
 			$table .= '<td class="' . $class . ' ' . $this->class_day . ' ' . $is_today . '">';
-			$table .= 		($timestamp_day) ? $this->_format( $this->format_day, $timestamp_day ) : $day;
+			
+			if ( $timestamp_day ) {
+				$table .= ($have_events) ? $this->_format( $this->format_day_with_event, $timestamp_day ) : $this->_format( $this->format_day, $timestamp_day );
+			} else {
+				$table .= $day;
+			}
+			
 			$table .= '</td>';
 			
 			$column += 1;
@@ -328,5 +378,30 @@ HTML;
 	 */
 	protected function _get_name_of_month( $timestamp ) {
 		return utf8_encode(strftime('%B', $timestamp));
+	}
+	
+	
+	
+	/**
+	 * Search a event 
+	 * @param  integer $start_timestamp 
+	 * @param  integer $end_timestamp   
+	 * @return boolean|array Array with events or FALSE if not found events
+	 */
+	protected function _search_events( $start_timestamp, $end_timestamp ) {
+		$result = array();
+		
+		foreach ( $this->events as $event ) {
+			if ( $event >= $start_timestamp && $event <= $end_timestamp ) {
+				$result[] = $event;
+			}
+		}
+		
+		
+		if ( !empty($result) ) {
+			return $result;	
+		}
+		
+		return false;
 	}
 }
