@@ -16,7 +16,7 @@
     },
     "minimum-stability": "stable",
 	"autoload" : {
-		"psr-0": {
+		"psr-4": {
 			"Kalendorius\\" : "src/"	
 		}
 	}
