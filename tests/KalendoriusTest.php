@@ -1,6 +1,8 @@
 <?php
 
-include '../Kalendorius.php';
+include '../src/Kalendorius.php';
+
+use Kalendorius\Kalendorius;
 
 class KalendoriusTest extends PHPUnit_Framework_TestCase {
 	
@@ -108,23 +110,23 @@ class KalendoriusTest extends PHPUnit_Framework_TestCase {
 		$objcalendar = null;
 		$methodformat = null;
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}%', time()));
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius\Kalendorius', array('%{DAY}%', time()));
 		$this->assertEquals( date('j'), $result );
 		
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}%/%{MONTH}%', time()));
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius\Kalendorius', array('%{DAY}%/%{MONTH}%', time()));
 		$this->assertEquals( date('j') . '/' . date('n'), $result );
 		
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('%{DAY}% / %{MONTH}%', time()));
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius\Kalendorius', array('%{DAY}% / %{MONTH}%', time()));
 		$this->assertEquals( date('j') . ' / ' . date('n'), $result );
 		
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('testOk', time()));
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius\Kalendorius', array('testOk', time()));
 		$this->assertEquals( 'testOk', $result );
 		
 		
-		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius', array('', time()));
+		$result = $this->getProtectedAndPrivateMethod('_format', 'Kalendorius\Kalendorius', array('', time()));
 		$this->assertEmpty( $result );
 	}
 	
@@ -134,14 +136,14 @@ class KalendoriusTest extends PHPUnit_Framework_TestCase {
 		setlocale(LC_ALL, "pt_BR", "portuguese");
 		date_default_timezone_set('America/Sao_Paulo');
 		
-		$result = $this->getProtectedAndPrivateMethod('_get_name_of_month', 'Kalendorius', array(1430045400));	
+		$result = $this->getProtectedAndPrivateMethod('_get_name_of_month', 'Kalendorius\Kalendorius', array(1430045400));	
 		$this->assertEquals('abril', strtolower($result));
 	}
 
 
 	
 	public function testSearchEvents() {
-		$class = new ReflectionClass('Kalendorius');	
+		$class = new ReflectionClass('Kalendorius\Kalendorius');	
   		$method = $class->getMethod('_search_events');
 		$method->setAccessible(true);
   		$calendar = new Kalendorius;

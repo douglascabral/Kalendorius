@@ -18,6 +18,9 @@
 *
 * @version 1.3
 */
+
+namespace Kalendorius;
+
 class Kalendorius {
 	
 	const DAY = '%{DAY}%';
