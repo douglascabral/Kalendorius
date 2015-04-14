@@ -16,7 +16,7 @@
 *
 * @since 24/03/2015
 *
-* @version 1.3
+* @version 1.4.3
 */
 
 namespace Kalendorius;
