@@ -299,13 +299,15 @@ HTML;
 				$timestamp_day_end = mktime(23, 59, 59, $month, (int)$day, $year);
 				$is_today = (mktime(0, 0, 0) == $timestamp_day) ? $this->class_today : '';
 				$have_events = $this->_search_events( $timestamp_day, $timestamp_day_end );
+				$numberday = date('z', $timestamp_day);
+                		$numberweek = date('W', $timestamp_day);
 				
 				if ( $have_events ) {
 					$class .= ' ' . $this->class_day_with_event;
 				}
 			}
 			
-			$table .= '<td class="' . $class . ' ' . $this->class_day . ' ' . $is_today . '">';
+			$table .= '<td class="' . $class . ' ' . $this->class_day . ' ' . $is_today . '" data-number-day="' . $numberday . '" data-number-week="' . $numberweek . '">';
 			
 			if ( $timestamp_day ) {
 				$table .= ($have_events) ? $this->_format( $this->format_day_with_event, $timestamp_day ) : $this->_format( $this->format_day, $timestamp_day );
